@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TMS Business Financial Optimizer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg-card: #141414;
+      --bg-input: #1c1c1c;
+      --gold: #FFD700;
+      --gold-muted: #b8960c;
+      --gold-dim: rgba(255,215,0,0.12);
+      --gold-border: rgba(255,215,0,0.35);
+      --white: #ffffff;
+      --gray: #888888;
+      --gray-light: #cccccc;
+      --border: #262626;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --blue: #a8c4ff;
+      --blue-dim: rgba(168,196,255,0.1);
+      --blue-border: rgba(168,196,255,0.25);
+      --green: #4ade80;
+      --green-dim: rgba(74,222,128,0.1);
+      --green-border: rgba(74,222,128,0.25);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--white);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #app { min-height: 100vh; }
+
+    /* ===================== LANDING ===================== */
+    .landing {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, #1c1400 0%, var(--bg) 65%);
+    }
+
+    .tms-logo {
+      margin-bottom: 48px;
+    }
+    .tms-letters {
+      display: block;
+      font-size: 44px;
+      font-weight: 900;
+      color: var(--gold);
+      letter-spacing: 10px;
+      line-height: 1;
+      text-shadow: 0 0 40px rgba(255,215,0,0.3);
+    }
+    .tms-sub {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--gray-light);
+      margin-top: 6px;
+      opacity: 0.8;
+    }
+
+    .landing-eyebrow {
+      font-size: 12px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .landing-title {
+      font-size: clamp(34px, 6vw, 58px);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+    }
+    .landing-title .gold { color: var(--gold); display: block; }
+
+    .landing-sub {
+      font-size: 17px;
+      color: var(--gray-light);
+      max-width: 500px;
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+
+    .landing-range {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 40px;
+      padding: 12px 28px;
+      border: 1px solid var(--gold-border);
+      border-radius: 50px;
+      background: var(--gold-dim);
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      padding: 18px 52px;
+      font-size: 17px;
+      font-weight: 800;
+      border-radius: 50px;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 32px rgba(255,215,0,0.35);
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 44px rgba(255,215,0,0.55);
+      background: #ffe44d;
+    }
+
+    .landing-biz-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 28px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .landing-biz-label {
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray);
+      align-self: flex-start;
+    }
+    .landing-biz-input {
+      width: 100%;
+      background: #141414;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--white);
+      font-size: 15px;
+      padding: 12px 16px;
+      outline: none;
+      text-align: center;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .landing-biz-input::placeholder { color: #3a3a3a; }
+    .landing-biz-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(255,215,0,0.1);
+    }
+
+    .btn-download {
+      background: transparent;
+      border: 1px solid var(--gold-border);
+      color: var(--gold);
+      padding: 14px 32px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.2px;
+    }
+    .btn-download:hover {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+    }
+
+    .landing-meta {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      color: var(--gray);
+      font-size: 13px;
+    }
+    .landing-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .landing-meta span::before {
+      content: '✓';
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    /* ===================== PROGRESS BAR ===================== */
+    .progress-wrap {
+      background: #0f0f0f;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 760px;
+      margin: 0 auto 10px;
+      font-size: 12px;
+      color: var(--gray);
+    }
+    .progress-head strong { color: var(--gold); font-size: 13px; }
+    .progress-steps {
+      display: flex;
+      gap: 3px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .ps {
+      flex: 1;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      transition: background 0.3s ease;
+    }
+    .ps.done { background: var(--gold-muted); }
+    .ps.active { background: var(--gold); }
+
+    /* ===================== SECTION PAGE ===================== */
+    .section-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+    }
+
+    .section-body {
+      flex: 1;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 44px 24px 60px;
+      animation: fadeUp 0.3s ease both;
+    }
+
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold-dim);
+      border: 1px solid var(--gold-border);
+      color: var(--gold);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .sec-icon { font-size: 18px; }
+
+    .section-title {
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 900;
+      letter-spacing: -0.8px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      font-size: 15px;
+      color: var(--gray-light);
+      line-height: 1.65;
+      margin-bottom: 36px;
+      max-width: 560px;
+    }
+
+    .fields { display: flex; flex-direction: column; gap: 22px; margin-bottom: 36px; }
+
+    .field-group { display: flex; flex-direction: column; gap: 8px; }
+
+    .field-label { font-size: 14px; font-weight: 600; color: var(--gray-light); }
+
+    .field-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field-wrap:focus-within {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(255,215,0,0.1);
+    }
+
+    .fpre {
+      padding: 0 14px;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--gold);
+      background: rgba(255,215,0,0.06);
+      border-right: 1px solid var(--border);
+      white-space: nowrap;
+      line-height: 54px;
+      height: 54px;
+    }
+    .fsuf {
+      padding: 0 14px;
+      font-size: 13px;
+      color: var(--gray);
+      border-left: 1px solid var(--border);
+      white-space: nowrap;
+      line-height: 54px;
+      height: 54px;
+    }
+
+    .field-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--white);
+      font-size: 20px;
+      font-weight: 600;
+      padding: 14px 16px;
+      width: 100%;
+      min-width: 0;
+    }
+    .field-input::placeholder { color: #3a3a3a; font-weight: 400; }
+    .field-input::-webkit-outer-spin-button,
+    .field-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .field-select {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 14px 16px;
+      width: 100%;
+      cursor: pointer;
+    }
+    .field-select option { background: #1c1c1c; color: var(--white); }
+
+    /* Nav buttons */
+    .section-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--gray-light);
+      padding: 13px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-back:hover { border-color: var(--gold); color: var(--gold); }
+
+    .btn-next {
+      background: var(--gold);
+      border: none;
+      color: #000;
+      padding: 14px 38px;
+      font-size: 15px;
+      font-weight: 800;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 20px rgba(255,215,0,0.2);
+      letter-spacing: 0.2px;
+    }
+    .btn-next:hover {
+      background: #ffe44d;
+      box-shadow: 0 4px 32px rgba(255,215,0,0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-skip {
+      background: transparent;
+      border: none;
+      color: var(--gray);
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 8px 4px;
+      margin-left: auto;
+      transition: color 0.2s;
+    }
+    .btn-skip:hover { color: var(--gray-light); }
+
+    /* ===================== RESULTS ===================== */
+    .results-page {
+      min-height: 100vh;
+      background: var(--bg);
+      padding: 48px 24px 60px;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .results-container { max-width: 820px; margin: 0 auto; }
+
+    .results-header {
+      text-align: center;
+      margin-bottom: 44px;
+      padding-bottom: 36px;
+      border-bottom: 1px solid var(--border);
+    }
+    .res-logo {
+      font-size: 11px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+    .res-tms {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--gold);
+      letter-spacing: 8px;
+      margin-bottom: 4px;
+    }
+    .res-title {
+      font-size: clamp(26px, 5vw, 40px);
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .res-date { font-size: 14px; color: var(--gray); }
+
+    /* BUCKETS */
+    .bucket {
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .bucket-hdr {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .b-icon { font-size: 26px; }
+    .b-label { flex: 1; }
+    .b-tag {
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 800;
+      margin-bottom: 3px;
+      opacity: 0.9;
+    }
+    .b-name { font-size: 18px; font-weight: 800; }
+    .b-totals { text-align: right; }
+    .b-amount { font-size: 20px; font-weight: 900; line-height: 1.15; }
+    .b-peryear { font-size: 10px; opacity: 0.6; letter-spacing: 1px; text-transform: uppercase; }
+
+    .bucket-rows { padding: 4px 24px 20px; }
+    .brow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.045);
+    }
+    .brow:last-child { border-bottom: none; }
+    .brow-name { font-size: 14px; color: var(--gray-light); display: flex; align-items: center; gap: 8px; }
+    .brow-val { font-size: 14px; font-weight: 700; white-space: nowrap; }
+
+    /* HIGH */
+    .b-high { background: linear-gradient(135deg, #171200 0%, #141414 100%); border: 1px solid var(--gold-border); }
+    .b-high .bucket-hdr { background: linear-gradient(90deg, rgba(255,215,0,0.12), rgba(255,215,0,0.04)); }
+    .b-high .b-tag, .b-high .b-name, .b-high .b-amount, .b-high .brow-val { color: var(--gold); }
+
+    /* MEDIUM */
+    .b-medium { background: linear-gradient(135deg, #0f1018 0%, #141414 100%); border: 1px solid var(--blue-border); }
+    .b-medium .bucket-hdr { background: linear-gradient(90deg, var(--blue-dim), rgba(168,196,255,0.02)); }
+    .b-medium .b-tag, .b-medium .b-name, .b-medium .b-amount, .b-medium .brow-val { color: var(--blue); }
+
+    /* LOW */
+    .b-low { background: linear-gradient(135deg, #0b1510 0%, #141414 100%); border: 1px solid var(--green-border); }
+    .b-low .bucket-hdr { background: linear-gradient(90deg, var(--green-dim), rgba(74,222,128,0.02)); }
+    .b-low .b-tag, .b-low .b-name, .b-low .b-amount, .b-low .brow-val { color: var(--green); }
+
+    /* TOTAL */
+    .total-card {
+      background: linear-gradient(135deg, #171200 0%, #111 100%);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      text-align: center;
+      margin: 24px 0;
+    }
+    .total-eyebrow {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 10px;
+    }
+    .total-amount {
+      font-size: clamp(36px, 7vw, 60px);
+      font-weight: 900;
+      color: var(--gold);
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 6px;
+      text-shadow: 0 0 40px rgba(255,215,0,0.25);
+    }
+    .total-sub { font-size: 15px; color: var(--gray); }
+
+    /* ROI */
+    .roi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 24px;
+      margin-bottom: 20px;
+    }
+    .roi-eyebrow {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .roi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    @media (max-width: 480px) {
+      .roi-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .roi-cell {
+      background: var(--bg-input);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+    }
+    .roi-lbl {
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 6px;
+    }
+    .roi-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--white);
+    }
+    .roi-val.gold { color: var(--gold); }
+    .roi-val small { font-size: 12px; color: var(--gray); font-weight: 400; }
+
+    .roi-track {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .roi-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-muted), var(--gold));
+      border-radius: 3px;
+      transition: width 1.2s cubic-bezier(.16,1,.3,1);
+    }
+    .roi-hint { font-size: 12px; color: var(--gray); text-align: right; }
+
+    /* CTA */
+    .cta-card {
+      background: linear-gradient(135deg, rgba(255,215,0,0.09), rgba(255,215,0,0.03));
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .cta-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+    .cta-card p { color: var(--gray-light); font-size: 15px; line-height: 1.6; margin-bottom: 28px; max-width: 460px; margin-left: auto; margin-right: auto; }
+
+    .btn-cta {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      padding: 16px 44px;
+      font-size: 15px;
+      font-weight: 800;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 28px rgba(255,215,0,0.35);
+      transition: all 0.2s;
+      letter-spacing: 0.2px;
+    }
+    .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 38px rgba(255,215,0,0.55); }
+
+    .btn-restart {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--gray);
+      padding: 14px 30px;
+      font-size: 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-left: 12px;
+      transition: all 0.2s;
+    }
+    .btn-restart:hover { border-color: var(--gray-light); color: var(--white); }
+
+    .disclaimer {
+      text-align: center;
+      color: #505050;
+      font-size: 11.5px;
+      line-height: 1.75;
+      padding: 20px 8px 40px;
+      max-width: 680px;
+      margin: 0 auto;
+      border-top: 1px solid #1e1e1e;
+    }
+
+    /* ===================== EMPTY STATE ===================== */
+    .empty-results {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray);
+      font-size: 16px;
+    }
+
+    /* ===================== ANIMATIONS ===================== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .landing > * { animation: fadeUp 0.4s ease both; }
+    .landing > *:nth-child(2) { animation-delay: 0.05s; }
+    .landing > *:nth-child(3) { animation-delay: 0.1s; }
+    .landing > *:nth-child(4) { animation-delay: 0.15s; }
+    .landing > *:nth-child(5) { animation-delay: 0.2s; }
+    .landing > *:nth-child(6) { animation-delay: 0.25s; }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ============================================================
+//  STATE
+// ============================================================
+let state = {
+  step: 'landing',    // 'landing' | 'section' | 'results'
+  idx: 0,
+  inp: {},
+  bizName: ''
+};
+
+// ============================================================
+//  SECTION DEFINITIONS
+// ============================================================
+const SECTIONS = [
+  {
+    id: 'health', num: 1, name: 'Health Coverage', icon: '⚕',
+    motivation: 'HIGH',
+    desc: 'Optimize group health insurance premiums for you and your employees through the TMS carrier network and benefit platforms.',
+    fields: [
+      { key: 'hEmp',  label: 'Employees currently on a health plan', type: 'number', ph: '3',   suf: 'employees' },
+      { key: 'hPrem', label: 'Average monthly premium per employee',  type: 'number', ph: '450', pre: '$', suf: '/mo' }
+    ],
+    calc(i) {
+      const a = n(i.hEmp) * n(i.hPrem) * 12;
+      return { lo: round(a * 0.12), hi: round(a * 0.28) };
+    }
+  },
+  {
+    id: 'payment', num: 2, name: 'Payment Processing', icon: '💳',
+    motivation: 'HIGH',
+    desc: 'Reduce credit and debit card processing fees through TMS merchant services partnerships. Even a 0.3% rate reduction compounds fast.',
+    fields: [
+      { key: 'pVol',  label: 'Monthly card processing volume',   type: 'number', ph: '25000', pre: '$', suf: '/mo' },
+      { key: 'pRate', label: 'Current effective processing rate', type: 'number', ph: '2.9',   suf: '%' }
+    ],
+    calc(i) {
+      const vol = n(i.pVol);
+      return { lo: round(vol * 0.003 * 12), hi: round(vol * 0.008 * 12) };
+    }
+  },
+  {
+    id: 'section125', num: 3, name: 'Section 125 Payroll Tax', icon: '📑',
+    motivation: 'HIGH',
+    desc: 'Pre-tax cafeteria plans reduce FICA payroll taxes for employer and employees alike — a guaranteed return on every enrolled dollar.',
+    fields: [
+      { key: 's125Emp',  label: 'Employees with pre-tax health/dental/vision', type: 'number', ph: '5',   suf: 'employees' },
+      { key: 's125Prem', label: 'Average monthly pre-tax deduction per employee', type: 'number', ph: '300', pre: '$', suf: '/mo' }
+    ],
+    calc(i) {
+      const annual = n(i.s125Emp) * n(i.s125Prem) * 12;
+      const fica = round(annual * 0.0765);
+      return { lo: fica, hi: round(fica * 1.18) };
+    }
+  },
+  {
+    id: 'cell', num: 4, name: 'Cell Phone', icon: '📱',
+    motivation: 'HIGH',
+    desc: 'Business wireless plan optimization through TMS telecom partnerships. Most businesses save 20–40% without changing their carrier.',
+    fields: [
+      { key: 'cLines', label: 'Number of business cell lines', type: 'number', ph: '3',  suf: 'lines' },
+      { key: 'cCost',  label: 'Current monthly cost per line',  type: 'number', ph: '85', pre: '$', suf: '/line/mo' }
+    ],
+    calc(i) {
+      const a = n(i.cLines) * n(i.cCost) * 12;
+      return { lo: round(a * 0.20), hi: round(a * 0.40) };
+    }
+  },
+  {
+    id: 'subscriptions', num: 5, name: 'Subscriptions', icon: '🔄',
+    motivation: 'HIGH',
+    desc: 'Audit and right-size software, SaaS, and recurring service subscriptions your business pays for each month.',
+    fields: [
+      { key: 'subMo', label: 'Total monthly software & subscription spend', type: 'number', ph: '500', pre: '$', suf: '/mo' }
+    ],
+    calc(i) {
+      const a = n(i.subMo) * 12;
+      return { lo: round(a * 0.10), hi: round(a * 0.30) };
+    }
+  },
+  {
+    id: 'bizIns', num: 6, name: 'Business Insurance', icon: '🛡',
+    motivation: 'MEDIUM',
+    desc: 'Compare and optimize general liability, property, workers comp, and professional liability through the TMS insurance marketplace.',
+    fields: [
+      { key: 'bizInsAmt', label: 'Total annual business insurance premiums', type: 'number', ph: '7500', pre: '$', suf: '/yr' }
+    ],
+    calc(i) {
+      const a = n(i.bizInsAmt);
+      return { lo: round(a * 0.10), hi: round(a * 0.25) };
+    }
+  },
+  {
+    id: 'purchasing', num: 7, name: 'Purchasing & Shipping', icon: '📦',
+    motivation: 'MEDIUM',
+    desc: 'Access GPO (Group Purchasing Organization) pricing on supplies, equipment, and shipping through the TMS member network.',
+    fields: [
+      { key: 'purch',  label: 'Monthly supply & material purchases', type: 'number', ph: '3000', pre: '$', suf: '/mo' },
+      { key: 'ship',   label: 'Monthly shipping costs',               type: 'number', ph: '400',  pre: '$', suf: '/mo' }
+    ],
+    calc(i) {
+      const a = (n(i.purch) + n(i.ship)) * 12;
+      return { lo: round(a * 0.05), hi: round(a * 0.18) };
+    }
+  },
+  {
+    id: 'energy', num: 8, name: 'Energy / FPL Rebates', icon: '⚡',
+    motivation: 'MEDIUM',
+    desc: 'Utility rebate programs, FPL commercial rebates, and energy efficiency incentives available to Florida businesses.',
+    fields: [
+      { key: 'energyMo', label: 'Average monthly electricity bill', type: 'number', ph: '600', pre: '$', suf: '/mo' }
+    ],
+    calc(i) {
+      const a = n(i.energyMo) * 12;
+      return { lo: round(a * 0.05), hi: round(a * 0.15) };
+    }
+  },
+  {
+    id: 'banking', num: 9, name: 'Business Banking', icon: '🏦',
+    motivation: 'MEDIUM',
+    desc: 'Eliminate unnecessary banking fees and earn better rates on idle cash through TMS banking relationships.',
+    fields: [
+      { key: 'bankFees', label: 'Monthly banking & account fees',    type: 'number', ph: '75',    pre: '$', suf: '/mo' },
+      { key: 'bankBal',  label: 'Average monthly operating balance', type: 'number', ph: '25000', pre: '$' }
+    ],
+    calc(i) {
+      const feeSaved = n(i.bankFees) * 12 * 0.75;
+      const interest = n(i.bankBal) * 0.012;
+      const tot = feeSaved + interest;
+      return { lo: round(tot * 0.65), hi: round(tot * 1.35) };
+    }
+  },
+  {
+    id: 'homeAuto', num: 10, name: 'Home & Auto Insurance', icon: '🏠',
+    motivation: 'MEDIUM',
+    desc: 'Personal home and auto insurance shopping through the TMS insurance marketplace — savings that go straight to your pocket.',
+    fields: [
+      { key: 'homeIns', label: 'Annual home insurance premium', type: 'number', ph: '2400', pre: '$', suf: '/yr' },
+      { key: 'autoIns', label: 'Annual auto insurance premium', type: 'number', ph: '1800', pre: '$', suf: '/yr' }
+    ],
+    calc(i) {
+      const a = n(i.homeIns) + n(i.autoIns);
+      return { lo: round(a * 0.10), hi: round(a * 0.22) };
+    }
+  },
+  {
+    id: 'tax', num: 11, name: 'Tax Strategy', icon: '📊',
+    motivation: 'LOW',
+    desc: 'Entity structure optimization, deduction maximization, and proactive tax planning — typically the single largest savings category.',
+    fields: [
+      { key: 'taxRev',    label: 'Annual gross business revenue', type: 'number', ph: '500000', pre: '$', suf: '/yr' },
+      { key: 'taxStruct', label: 'Current business structure', type: 'select',
+        opts: ['Sole Proprietor', 'LLC – Single Member', 'LLC – Multi-Member', 'S-Corporation', 'C-Corporation', 'Partnership'] }
+    ],
+    calc(i) {
+      const rev = n(i.taxRev);
+      const s = i.taxStruct || '';
+      let lo = 0.025, hi = 0.060;
+      if (s.includes('Sole'))   { lo = 0.030; hi = 0.080; }
+      if (s.includes('LLC'))    { lo = 0.030; hi = 0.075; }
+      if (s.includes('S-Corp')) { lo = 0.040; hi = 0.100; }
+      if (s.includes('C-Corp')) { lo = 0.020; hi = 0.055; }
+      return { lo: round(rev * lo), hi: round(rev * hi) };
+    }
+  },
+  {
+    id: 'government', num: 12, name: 'Government Programs', icon: '🏛',
+    motivation: 'LOW',
+    desc: 'WOTC tax credits, SBA programs, and government incentive programs your business may already qualify for.',
+    fields: [
+      { key: 'govEmp',  label: 'Total number of W-2 employees', type: 'number', ph: '5', suf: 'employees' },
+      { key: 'govHire', label: 'Do you hire veterans, returning citizens, or long-term unemployed?', type: 'select',
+        opts: ['No', 'Yes — occasionally', 'Yes — regularly'] }
+    ],
+    calc(i) {
+      const emps = n(i.govEmp);
+      const targeted = i.govHire && i.govHire !== 'No';
+      return { lo: round(emps * 400), hi: round(emps * (targeted ? 2400 : 700)) };
+    }
+  }
+];
+
+// ============================================================
+//  HELPERS
+// ============================================================
+function n(v) { return Math.max(0, parseFloat(v) || 0); }
+function round(v) { return Math.round(v); }
+
+function fmt(v) {
+  if (!v || v === 0) return '$0';
+  if (v >= 1000000) return '$' + +(v / 1000000).toFixed(1) + 'M';
+  if (v >= 1000)    return '$' + +(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1) + 'K';
+  return '$' + Math.round(v).toLocaleString();
+}
+
+function fmtRange(lo, hi) {
+  if (lo === 0 && hi === 0) return '$0';
+  if (lo === hi) return fmt(lo) + '/yr';
+  return fmt(lo) + ' – ' + fmt(hi) + '/yr';
+}
+
+// ============================================================
+//  RENDER: LANDING
+// ============================================================
+function renderLanding() {
+  return `
+    <div class="landing">
+      <div class="tms-logo">
+        <span class="tms-letters">TMS</span>
+        <span class="tms-sub">Solutions Group</span>
+      </div>
+      <div class="landing-eyebrow">Business Financial Optimizer</div>
+      <h1 class="landing-title">
+        Discover Your Hidden
+        <span class="gold">Business Savings</span>
+      </h1>
+      <p class="landing-sub">
+        Find out exactly how much your business could save — in about 3 minutes.
+      </p>
+      <p class="landing-sub" style="font-size:15px; color:#aaa; margin-bottom:32px;">
+        TMS members typically identify $1,000–$10,000 in annual savings in their first audit.
+      </p>
+      <div class="landing-biz-wrap">
+        <label class="landing-biz-label">Business Name (optional)</label>
+        <input class="landing-biz-input" type="text" id="biz-name-input"
+          placeholder="e.g. Sunshine Roofing LLC"
+          oninput="state.bizName = this.value.trim()" />
+      </div>
+      <button class="btn-primary" onclick="startAudit()">Start Free Analysis &rarr;</button>
+      <div class="landing-meta">
+        <span>Under 5 minutes</span>
+        <span>12 categories</span>
+        <span>No data shared</span>
+        <span>Instant results</span>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+//  RENDER: SECTION
+// ============================================================
+function renderSection(idx) {
+  const s = SECTIONS[idx];
+  const isFirst = idx === 0;
+  const isLast  = idx === SECTIONS.length - 1;
+
+  const steps = SECTIONS.map((_, i) =>
+    `<div class="ps ${i < idx ? 'done' : i === idx ? 'active' : ''}"></div>`
+  ).join('');
+
+  const fields = s.fields.map(f => {
+    const val = state.inp[f.key] !== undefined ? state.inp[f.key] : '';
+
+    if (f.type === 'select') {
+      const opts = f.opts.map(o =>
+        `<option value="${esc(o)}" ${val === o ? 'selected' : ''}>${esc(o)}</option>`
+      ).join('');
+      return `
+        <div class="field-group">
+          <label class="field-label">${f.label}</label>
+          <div class="field-wrap">
+            <select class="field-select" id="f-${f.key}" onchange="si('${f.key}',this.value)">
+              ${opts}
+            </select>
+          </div>
+        </div>`;
+    }
+
+    return `
+      <div class="field-group">
+        <label class="field-label">${f.label}</label>
+        <div class="field-wrap">
+          ${f.pre ? `<span class="fpre">${f.pre}</span>` : ''}
+          <input class="field-input" type="number" id="f-${f.key}"
+            placeholder="${f.ph || '0'}" value="${esc(val)}"
+            min="0" inputmode="numeric"
+            oninput="si('${f.key}',this.value)" />
+          ${f.suf ? `<span class="fsuf">${f.suf}</span>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="section-page">
+      <div class="progress-wrap">
+        <div class="progress-head">
+          <span>Section ${idx + 1} of ${SECTIONS.length}</span>
+          <strong>${s.name}</strong>
+          <span>${Math.round((idx + 1) / SECTIONS.length * 100)}% complete</span>
+        </div>
+        <div class="progress-steps">${steps}</div>
+      </div>
+      <div class="section-body">
+        <div class="section-badge">
+          <span class="sec-icon">${s.icon}</span>
+          Section ${s.num} &nbsp;of&nbsp; ${SECTIONS.length}
+        </div>
+        <h2 class="section-title">${s.name}</h2>
+        <p class="section-desc">${s.desc}</p>
+        <div class="fields">${fields}</div>
+        <div class="section-nav">
+          ${!isFirst
+            ? `<button class="btn-back" onclick="goBack()">&larr; Back</button>`
+            : `<button class="btn-back" onclick="gotoLanding()">&larr; Home</button>`}
+          <button class="btn-next" onclick="goNext()">
+            ${isLast ? 'Calculate My Savings &rarr;' : 'Next &rarr;'}
+          </button>
+          <button class="btn-skip" onclick="skipSec()">Skip this section</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+//  RENDER: RESULTS
+// ============================================================
+function renderResults() {
+  const results = SECTIONS.map(s => {
+    const r = s.calc(state.inp);
+    return { id: s.id, name: s.name, icon: s.icon, motivation: s.motivation, lo: r.lo, hi: r.hi };
+  });
+
+  const high   = results.filter(r => r.motivation === 'HIGH'   && (r.lo > 0 || r.hi > 0));
+  const medium = results.filter(r => r.motivation === 'MEDIUM' && (r.lo > 0 || r.hi > 0));
+  const low    = results.filter(r => r.motivation === 'LOW'    && (r.lo > 0 || r.hi > 0));
+
+  const totalLo = results.reduce((s, r) => s + r.lo, 0);
+  const totalHi = results.reduce((s, r) => s + r.hi, 0);
+
+  const TMS_COST = 2388;
+  const roiLo = totalLo > 0 ? Math.round(totalLo / TMS_COST * 100) : 0;
+  const roiHi = totalHi > 0 ? Math.round(totalHi / TMS_COST * 100) : 0;
+  const barW  = totalHi > 0 ? Math.min(96, Math.round(totalLo / (totalLo + TMS_COST) * 100)) : 0;
+
+  const paybackMo = totalLo > 0
+    ? `Your $199/mo membership pays for itself in ${Math.ceil(TMS_COST / totalLo * 12)} months`
+    : 'Complete more sections to see your payback period';
+
+  function bucket(title, items, cls, ico) {
+    if (!items.length) return '';
+    const blo = items.reduce((s, r) => s + r.lo, 0);
+    const bhi = items.reduce((s, r) => s + r.hi, 0);
+    const rows = items.map(r => `
+      <div class="brow">
+        <span class="brow-name"><span>${r.icon}</span> ${r.name}</span>
+        <span class="brow-val">${fmtRange(r.lo, r.hi)}</span>
+      </div>`).join('');
+    return `
+      <div class="bucket b-${cls}">
+        <div class="bucket-hdr">
+          <span class="b-icon">${ico}</span>
+          <div class="b-label">
+            <div class="b-tag">${title} Motivation</div>
+            <div class="b-name">${title} Impact Savings</div>
+          </div>
+          <div class="b-totals">
+            <div class="b-amount">${fmtRange(blo, bhi)}</div>
+            <div class="b-peryear">annual savings</div>
+          </div>
+        </div>
+        <div class="bucket-rows">${rows}</div>
+      </div>`;
+  }
+
+  const nothingEntered = totalLo === 0 && totalHi === 0;
+
+  const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  return `
+    <div class="results-page">
+      <div class="results-container">
+
+        <div class="results-header">
+          <div class="res-logo">TMS Solutions Group</div>
+          <div class="res-tms">TMS</div>
+          <h1 class="res-title">Your Business Savings Report</h1>
+          <div class="res-date">Business Financial Optimizer &mdash; ${today}</div>
+        </div>
+
+        ${nothingEntered
+          ? `<div class="empty-results">No data entered — go back and complete at least a few sections to see your savings.</div>`
+          : `${bucket('HIGH',   high,   'high',   '🔥')}
+             ${bucket('MEDIUM', medium, 'medium', '⭐')}
+             ${bucket('LOW',    low,    'low',    '✅')}`
+        }
+
+        <div class="total-card">
+          <div class="total-eyebrow">Total Annual Savings Potential</div>
+          <div class="total-amount">${fmtRange(totalLo, totalHi)}</div>
+          <div class="total-sub">across all qualifying categories you entered</div>
+        </div>
+
+        <div class="roi-card">
+          <div class="roi-eyebrow">&#9650; TMS MEMBERSHIP ROI</div>
+          <div class="roi-grid">
+            <div class="roi-cell">
+              <div class="roi-lbl">TMS Investment</div>
+              <div class="roi-val">$2,388 <small>/yr ($199/mo)</small></div>
+            </div>
+            <div class="roi-cell">
+              <div class="roi-lbl">Minimum Savings</div>
+              <div class="roi-val gold">${fmt(totalLo)} <small>/yr</small></div>
+            </div>
+            <div class="roi-cell">
+              <div class="roi-lbl">Maximum Savings</div>
+              <div class="roi-val gold">${fmt(totalHi)} <small>/yr</small></div>
+            </div>
+            <div class="roi-cell">
+              <div class="roi-lbl">ROI Range</div>
+              <div class="roi-val gold">${roiLo}% &ndash; ${roiHi}%</div>
+            </div>
+          </div>
+          <div class="roi-track">
+            <div class="roi-fill" id="roi-fill" style="width:0%"></div>
+          </div>
+          <div class="roi-hint">${paybackMo}</div>
+        </div>
+
+        <div class="cta-card">
+          <h3>Ready to Capture These Savings?</h3>
+          <p>Join TMS Solutions and start capturing these savings — your first month pays for itself.</p>
+          <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; align-items:center;">
+            <button class="btn-cta" onclick="alert('Contact TMS Solutions Group to schedule your complimentary consultation.')">
+              Get Started Today
+            </button>
+            <button class="btn-download" onclick="generatePDF()">
+              &#8659; Download My Report
+            </button>
+          </div>
+          <div style="margin-top:16px;">
+            <button class="btn-restart" onclick="restart()">&larr; Start Over</button>
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          Savings estimates are based on information provided and represent potential ranges only. Actual savings will vary based on your specific business circumstances, current vendors, and implementation. These figures are for informational purposes only and do not constitute financial, legal, tax, or professional advice. TMS Solutions Group makes no guarantee of specific savings outcomes. Consult a qualified professional before making any financial decisions.
+          <br><br>&copy; ${new Date().getFullYear()} TMS Solutions Group. All rights reserved.
+        </div>
+
+      </div>
+    </div>`;
+}
+
+// ============================================================
+//  ACTIONS
+// ============================================================
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function si(key, val) { state.inp[key] = val; }
+
+function saveCurrentFields() {
+  if (state.step !== 'section') return;
+  SECTIONS[state.idx].fields.forEach(f => {
+    const el = document.getElementById('f-' + f.key);
+    if (el) state.inp[f.key] = el.value;
+  });
+}
+
+function startAudit() {
+  const el = document.getElementById('biz-name-input');
+  if (el) state.bizName = el.value.trim();
+  state.step = 'section';
+  state.idx = 0;
+  render();
+  window.scrollTo(0, 0);
+}
+
+function gotoLanding() {
+  state.step = 'landing';
+  render();
+  window.scrollTo(0, 0);
+}
+
+function goNext() {
+  saveCurrentFields();
+  if (state.idx < SECTIONS.length - 1) {
+    state.idx++;
+    render();
+  } else {
+    state.step = 'results';
+    render();
+    // Animate ROI bar after render
+    setTimeout(() => {
+      const el = document.getElementById('roi-fill');
+      if (el) {
+        const totalLo = SECTIONS.reduce((s, sec) => s + sec.calc(state.inp).lo, 0);
+        const totalHi = SECTIONS.reduce((s, sec) => s + sec.calc(state.inp).hi, 0);
+        const barW = totalHi > 0 ? Math.min(96, Math.round(totalLo / (totalLo + 2388) * 100)) : 0;
+        el.style.width = barW + '%';
+      }
+    }, 100);
+  }
+  window.scrollTo(0, 0);
+}
+
+function goBack() {
+  saveCurrentFields();
+  if (state.idx > 0) {
+    state.idx--;
+    render();
+    window.scrollTo(0, 0);
+  }
+}
+
+function skipSec() {
+  SECTIONS[state.idx].fields.forEach(f => { state.inp[f.key] = '0'; });
+  goNext();
+}
+
+function restart() {
+  state = { step: 'landing', idx: 0, inp: {}, bizName: '' };
+  render();
+  window.scrollTo(0, 0);
+}
+
+// ============================================================
+//  RENDER LOOP
+// ============================================================
+function render() {
+  const app = document.getElementById('app');
+  if      (state.step === 'landing') app.innerHTML = renderLanding();
+  else if (state.step === 'section') app.innerHTML = renderSection(state.idx);
+  else if (state.step === 'results') app.innerHTML = renderResults();
+}
+
+render();
+
+// ============================================================
+//  PDF CONTENT DATA
+// ============================================================
+const EXPLANATIONS = {
+  health:       'TMS guides members to publicly available health sharing programs such as Liberty HealthShare and Sedera, as well as traditional group plan options that can be compared against current premiums. These alternatives are open to small business owners and typically run 12–28% below standard market rates while maintaining comparable coverage.',
+  payment:      'TMS identifies access to interchange-plus pricing models through publicly available merchant services platforms such as Helcim. Businesses that switch from flat-rate processors to interchange-plus pricing typically reduce their effective rate by 0.3–0.8%, with savings that grow in proportion to monthly card volume.',
+  section125:   'Section 125 cafeteria plans are a publicly available IRS-qualified benefit structure that routes employee benefit premiums through pre-tax payroll deductions, generating a guaranteed 7.65% FICA savings on every dollar for the employer. TMS connects members with existing resources to establish and administer these plans.',
+  cell:         'TMS guides members to publicly available business wireless plans through carriers such as Mint Mobile and other major network MVNOs. These plans are available directly to small businesses and can bring lines from $80–$100/month down to $45–$65/month with equivalent coverage and no service interruption.',
+  subscriptions:'TMS guides members through a self-directed subscription audit using publicly available tools to identify redundant software, unused seats, and over-provisioned SaaS tiers. Programs such as Wave offer free or low-cost accounting alternatives that are available to any business owner without a membership.',
+  bizIns:       'TMS connects members with existing insurance comparison resources and publicly available carriers such as biBERK (a Berkshire Hathaway company) and NEXT Insurance. These carriers offer direct-to-business quoting online, and most businesses that re-shop at renewal find equivalent coverage at 10–25% below what they currently pay.',
+  purchasing:   'TMS guides members to enroll in Amazon Business Prime, a publicly available program offering business pricing and tax-exempt purchasing. Members are also guided to apply for a Florida Resale Certificate — a free state program — to eliminate sales tax on qualifying purchases, and to access published UPS and FedEx discount programs.',
+  energy:       'Florida Power & Light\'s Business Rebate program is a publicly available utility incentive that offers cash back for LED upgrades, HVAC optimization, and smart controls. TMS identifies access to this program and helps members understand the application process. Upside is a publicly available app that provides fuel cash-back for businesses with fleet or travel expenses.',
+  banking:      'TMS connects members with existing fee-free business banking options including Relay and Mercury, both publicly available to any small business. Bluevine\'s high-yield business savings account is similarly available directly, currently offering 1–2% APY on operating balances — turning idle cash into passive income without switching primary banks.',
+  homeAuto:     'TMS guides members to re-shop personal home and auto insurance using publicly available comparison tools and direct carriers. Most policyholders who shop at renewal — rather than auto-renewing — identify savings of 10–22% by accessing the same carriers and rates already available in the open market.',
+  tax:          'TMS connects members with existing tax strategy resources focused on publicly available deductions and elections, including S-Corp entity structure, home office deductions, vehicle expense methods, and equipment expensing under IRS Section 179. These strategies are available to any small business owner and are most effective when implemented proactively.',
+  government:   'The Work Opportunity Tax Credit (WOTC) is a publicly available federal program providing $2,400–$9,600 per qualifying new hire of veterans, returning citizens, or other targeted groups. TMS guides members to the WOTC certification process and identifies other applicable SBA programs, state grants, and local economic development credits that are open to qualifying businesses.'
+};
+
+const NEXT_STEPS = {
+  health:       'TMS members are guided to compare Liberty HealthShare, Sedera, and available group plan options against their current premiums — all programs are publicly available and can be reviewed directly.',
+  payment:      'TMS members are guided to request a rate analysis from interchange-plus platforms such as Helcim, which offer free online quoting. Review your last three processing statements to calculate potential savings before switching.',
+  section125:   'TMS connects members with resources to establish a Section 125 cafeteria plan. Once in place, existing employee health deductions route through pre-tax payroll automatically, capturing FICA savings on every enrolled dollar.',
+  cell:         'TMS guides members to compare current wireless bills against publicly available business plans from Mint Mobile and major MVNOs. Most comparisons can be done online in under 15 minutes with no obligation to switch.',
+  subscriptions:'TMS guides members through a structured review of monthly subscriptions to identify redundant tools and over-provisioned tiers. Free alternatives such as Wave are publicly available and can replace paid tools at no cost.',
+  bizIns:       'TMS connects members with publicly available carriers such as biBERK and NEXT Insurance, both of which offer direct online quoting. Provide your current declarations page to get a side-by-side comparison at no cost.',
+  purchasing:   'TMS guides members to enroll in Amazon Business Prime and apply for a Florida Resale Certificate — both free, publicly available programs. Confirm your resale certificate is on file with primary suppliers to begin eliminating applicable sales tax immediately.',
+  energy:       'TMS identifies access to FPL\'s Business Rebate program, which is free to apply for and open to all FPL commercial customers. Pull your last 12 months of bills and review the FPL Business Rebates portal to see which equipment upgrades qualify.',
+  banking:      'TMS connects members with Relay and Mercury for fee-free business checking and Bluevine for high-yield savings — all publicly available with no referral required. Opening accounts takes under 15 minutes and can eliminate monthly banking fees immediately.',
+  homeAuto:     'TMS guides members to re-shop home and auto coverage at each renewal using publicly available comparison tools. Set a calendar reminder 60 days before each policy renewal date to allow time for quotes.',
+  tax:          'TMS connects members with resources to review entity structure, available deductions, and S-Corp election eligibility. These are publicly available IRS strategies — the value is in applying them proactively rather than reactively at tax time.',
+  government:   'TMS guides members to the WOTC certification process through the publicly available federal program portal. Review current and recent hires against the qualifying categories — retroactive certification is possible in some cases.'
+};
+
+// ============================================================
+//  PDF GENERATION
+// ============================================================
+function generatePDF() {
+  if (!window.jspdf) { alert('PDF library still loading — please try again in a moment.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' });
+
+  // --- dimensions & margins ---
+  const W = 612, H = 792, ML = 48, MR = 48;
+  const CW = W - ML - MR;
+
+  // --- color palettes ---
+  const C = {
+    black:      [10,  10,  10],
+    white:      [255, 255, 255],
+    goldBright: [255, 215, 0],      // on dark bg
+    goldDark:   [155, 115, 0],      // on light bg
+    goldAccent: [200, 158, 0],
+    goldBg:     [255, 250, 220],
+    dgray:      [50,  50,  50],
+    mgray:      [110, 110, 110],
+    lgray:      [170, 170, 170],
+    xgray:      [220, 220, 220],
+    warmBg:     [252, 251, 249],
+    blueTxt:    [80,  120, 200],
+    blueBg:     [235, 242, 255],
+    greenTxt:   [40,  160, 80],
+    greenBg:    [225, 248, 232],
+  };
+
+  const BUCKET_META = {
+    HIGH:   { txt: C.goldDark,   bg: C.goldBg,  bar: C.goldAccent },
+    MEDIUM: { txt: C.blueTxt,    bg: C.blueBg,  bar: [120,160,230] },
+    LOW:    { txt: C.greenTxt,   bg: C.greenBg, bar: [60,180,100]  },
+  };
+
+  // --- helpers ---
+  const sc = (arr) => doc.setTextColor(...arr);
+  const sf = (arr) => doc.setFillColor(...arr);
+  const sd = (arr) => doc.setDrawColor(...arr);
+  const font = (style, size) => { doc.setFont('helvetica', style); if (size) doc.setFontSize(size); };
+  const fillRect = (x, y, w, h, col) => { sf(col); doc.rect(x, y, w, h, 'F'); };
+  const hline = (y, col, lw) => {
+    doc.setLineWidth(lw || 0.4); sd(col || C.xgray);
+    doc.line(ML, y, W - MR, y);
+  };
+  const textAt = (str, x, y, col, size, style, align) => {
+    if (size)  doc.setFontSize(size);
+    if (style) font(style);
+    if (col)   sc(col);
+    doc.text(str, x, y, align ? { align } : undefined);
+  };
+  const wrap = (str, maxW) => doc.splitTextToSize(str, maxW);
+
+  // --- data ---
+  const results = SECTIONS.map(s => {
+    const r = s.calc(state.inp);
+    return { id: s.id, name: s.name, icon: s.icon, motivation: s.motivation, lo: r.lo, hi: r.hi };
+  });
+  const totalLo = results.reduce((s, r) => s + r.lo, 0);
+  const totalHi = results.reduce((s, r) => s + r.hi, 0);
+  const TMS_COST = 2388;
+  const roiLo = totalLo > 0 ? Math.round(totalLo / TMS_COST * 100) : 0;
+  const roiHi = totalHi > 0 ? Math.round(totalHi / TMS_COST * 100) : 0;
+  const paybackMo = totalLo > 0 ? Math.ceil(TMS_COST / totalLo * 12) : null;
+  const bizName = state.bizName || '';
+  const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  const highItems   = results.filter(r => r.motivation === 'HIGH'   && (r.lo > 0 || r.hi > 0));
+  const mediumItems = results.filter(r => r.motivation === 'MEDIUM' && (r.lo > 0 || r.hi > 0));
+  const lowItems    = results.filter(r => r.motivation === 'LOW'    && (r.lo > 0 || r.hi > 0));
+  const activeCount = results.filter(r => r.lo > 0 || r.hi > 0).length;
+
+  // ================================================================
+  // PAGE 1 — COVER
+  // ================================================================
+  fillRect(0, 0, W, H, C.black);
+  fillRect(0, 0, W, 6, C.goldBright);
+  fillRect(0, H - 6, W, 6, C.goldBright);
+
+  // TMS wordmark
+  textAt('TMS', W / 2, 250, C.goldBright, 84, 'bold', 'center');
+  textAt('SOLUTIONS GROUP', W / 2, 273, C.lgray, 11, 'normal', 'center');
+
+  // gold rule
+  fillRect(ML + 80, 292, CW - 160, 1.5, C.goldBright);
+
+  // report title
+  textAt('Business Financial Optimizer', W / 2, 330, C.white, 22, 'bold', 'center');
+  textAt('Savings Assessment Report', W / 2, 352, C.lgray, 14, 'normal', 'center');
+
+  let coverY = 395;
+  if (bizName) {
+    textAt(bizName, W / 2, coverY, C.goldBright, 15, 'bold', 'center');
+    coverY += 22;
+  }
+  textAt(today, W / 2, coverY, C.mgray, 11, 'normal', 'center');
+
+  // bottom
+  textAt('tmsolutionsgroup.com', W / 2, H - 28, C.mgray, 9, 'normal', 'center');
+
+  // ================================================================
+  // PAGE 2 — EXECUTIVE SUMMARY
+  // ================================================================
+  doc.addPage();
+  fillRect(0, 0, W, H, C.warmBg);
+
+  // header band
+  fillRect(0, 0, W, 52, C.black);
+  textAt('EXECUTIVE SUMMARY', ML, 34, C.goldBright, 10, 'bold');
+  textAt('TMS Business Financial Optimizer', W - MR, 34, C.mgray, 9, 'normal', 'right');
+
+  let y = 82;
+
+  // section heading
+  textAt('Your Savings Potential', ML, y, C.black, 14, 'bold'); y += 20;
+  const introText = `Based on the information you provided, this report outlines your potential annual savings across ${activeCount} categor${activeCount === 1 ? 'y' : 'ies'}. Estimates reflect typical savings achieved by TMS members through vetted programs, preferred vendor pricing, and financial optimization strategies.`;
+  font('normal', 9.5); sc(C.mgray);
+  const introLines = wrap(introText, CW);
+  doc.text(introLines, ML, y); y += introLines.length * 13 + 18;
+
+  // 2×2 metric cards
+  const cardW = (CW - 14) / 2, cardH = 70;
+  const metrics = [
+    { label: 'MINIMUM ANNUAL SAVINGS', value: fmt(totalLo), sub: 'conservative estimate',   gold: true },
+    { label: 'MAXIMUM ANNUAL SAVINGS', value: fmt(totalHi), sub: 'optimistic estimate',      gold: true },
+    { label: 'TMS ANNUAL INVESTMENT',  value: '$2,388',      sub: '$199 per month',           gold: false },
+    { label: 'ESTIMATED ROI RANGE',    value: `${roiLo}%–${roiHi}%`, sub: 'return on membership', gold: true },
+  ];
+  metrics.forEach((m, i) => {
+    const cx = ML + (i % 2) * (cardW + 14);
+    const cy = y + Math.floor(i / 2) * (cardH + 10);
+    fillRect(cx, cy, cardW, cardH, C.white);
+    fillRect(cx, cy, 3, cardH, m.gold ? C.goldAccent : C.lgray);
+    textAt(m.label, cx + 12, cy + 16, C.mgray, 7.5, 'bold');
+    textAt(m.value, cx + 12, cy + 42, m.gold ? C.goldDark : C.dgray, 22, 'bold');
+    textAt(m.sub,   cx + 12, cy + 58, C.lgray, 8.5, 'normal');
+  });
+  y += 2 * (cardH + 10) + 16;
+
+  if (paybackMo) {
+    fillRect(ML, y, CW, 34, C.goldBg);
+    fillRect(ML, y, 3, 34, C.goldAccent);
+    textAt(`Payback Period: ${paybackMo} month${paybackMo === 1 ? '' : 's'}`, ML + 12, y + 14, C.goldDark, 10, 'bold');
+    textAt('Your TMS membership pays for itself within the first year at minimum savings estimates.', ML + 12, y + 27, C.goldDark, 8.5, 'normal');
+    y += 46;
+  }
+
+  // categories table
+  y += 10;
+  textAt('Categories Analyzed', ML, y, C.black, 12, 'bold'); y += 14;
+  hline(y, C.xgray); y += 12;
+
+  results.filter(r => r.lo > 0 || r.hi > 0).forEach(r => {
+    if (y > H - 70) { doc.addPage(); fillRect(0, 0, W, H, C.warmBg); y = 48; }
+    const bm = BUCKET_META[r.motivation];
+    fillRect(ML, y - 9, 5, 13, bm.bar);
+    textAt(r.name, ML + 12, y, C.black, 9.5, 'normal');
+    textAt(fmtRange(r.lo, r.hi), W - MR, y, bm.txt, 9.5, 'bold', 'right');
+    y += 17;
+  });
+
+  // ================================================================
+  // PAGES 3+ — BUCKET BREAKDOWNS
+  // ================================================================
+  [
+    { label: 'HIGH MOTIVATION SAVINGS',   items: highItems,   key: 'HIGH'   },
+    { label: 'MEDIUM MOTIVATION SAVINGS', items: mediumItems, key: 'MEDIUM' },
+    { label: 'LOW MOTIVATION SAVINGS',    items: lowItems,    key: 'LOW'    },
+  ].forEach(bucket => {
+    if (!bucket.items.length) return;
+    const bm = BUCKET_META[bucket.key];
+    const blo = bucket.items.reduce((s, r) => s + r.lo, 0);
+    const bhi = bucket.items.reduce((s, r) => s + r.hi, 0);
+
+    const newPage = (cont) => {
+      doc.addPage();
+      fillRect(0, 0, W, H, C.warmBg);
+      fillRect(0, 0, W, 52, C.black);
+      textAt(bucket.label + (cont ? ' (continued)' : ''), ML, 34, bm.bar, 10, 'bold');
+      textAt('TMS Business Financial Optimizer', W - MR, 34, C.mgray, 9, 'normal', 'right');
+      return 70;
+    };
+
+    y = newPage(false);
+
+    // bucket subtotal banner
+    fillRect(ML, y, CW, 26, bm.bg);
+    textAt(`Subtotal: ${fmtRange(blo, bhi)} per year`, ML + 10, y + 17, bm.txt, 9.5, 'bold');
+    y += 36;
+
+    bucket.items.forEach(item => {
+      const expl = EXPLANATIONS[item.id] || '';
+      const explLines = expl ? wrap(expl, CW - 14) : [];
+      const itemH = 30 + (explLines.length * 13) + 18;
+
+      if (y + itemH > H - 52) y = newPage(true);
+
+      // item header
+      fillRect(ML, y, CW, 28, bm.bg);
+      fillRect(ML, y, 4, 28, bm.bar);
+      textAt(item.name, ML + 12, y + 18, C.black, 11, 'bold');
+      textAt(fmtRange(item.lo, item.hi), W - MR, y + 18, bm.txt, 11, 'bold', 'right');
+      y += 34;
+
+      // explanation
+      if (explLines.length) {
+        font('normal', 9.5); sc(C.mgray);
+        doc.text(explLines, ML + 8, y);
+        y += explLines.length * 13 + 10;
+      }
+
+      hline(y, C.xgray, 0.3); y += 12;
+    });
+  });
+
+  // ================================================================
+  // NEXT STEPS PAGE
+  // ================================================================
+  doc.addPage();
+  fillRect(0, 0, W, H, C.warmBg);
+  fillRect(0, 0, W, 52, C.black);
+  textAt('RECOMMENDED NEXT STEPS', ML, 34, C.goldBright, 10, 'bold');
+  textAt('TMS Business Financial Optimizer', W - MR, 34, C.mgray, 9, 'normal', 'right');
+
+  y = 80;
+  textAt('Your Top 3 Priority Actions', ML, y, C.black, 13, 'bold'); y += 12;
+  hline(y, C.xgray); y += 16;
+
+  font('normal', 9.5); sc(C.mgray);
+  const nsIntro = wrap('Based on your inputs, the three categories below represent your highest immediate savings opportunity. We recommend contacting a TMS advisor to begin with these items first.', CW);
+  doc.text(nsIntro, ML, y); y += nsIntro.length * 13 + 18;
+
+  const sortedHigh   = results.filter(r => r.motivation === 'HIGH'   && r.hi > 0).sort((a, b) => b.hi - a.hi);
+  const sortedMedium = results.filter(r => r.motivation === 'MEDIUM' && r.hi > 0).sort((a, b) => b.hi - a.hi);
+  const top3 = [...sortedHigh, ...sortedMedium].slice(0, 3);
+  top3.forEach((item, i) => {
+    const actionText = NEXT_STEPS[item.id] || `Contact your TMS advisor to begin optimizing your ${item.name.toLowerCase()} costs.`;
+    const actionLines = wrap(actionText, CW - 56);
+    const cardHeight = 24 + 16 + 14 + actionLines.length * 13 + 14;
+
+    fillRect(ML, y, CW, cardHeight, C.white);
+    fillRect(ML, y, 3, cardHeight, C.goldAccent);
+    fillRect(ML + 10, y + 10, 26, 26, C.goldBg);
+    textAt(String(i + 1), ML + 23, y + 27, C.goldDark, 15, 'bold', 'center');
+    textAt(item.name, ML + 46, y + 22, C.black, 11, 'bold');
+    textAt('Potential savings: ' + fmtRange(item.lo, item.hi), ML + 46, y + 36, C.goldDark, 9.5, 'bold');
+    font('normal', 9); sc(C.mgray);
+    doc.text(actionLines, ML + 46, y + 50);
+    y += cardHeight + 12;
+  });
+
+  // CTA box
+  y += 8;
+  fillRect(ML, y, CW, 72, C.black);
+  fillRect(ML, y, CW, 3, C.goldBright);
+  fillRect(ML, y + 69, CW, 3, C.goldBright);
+  textAt('Ready to Start Saving?', W / 2, y + 26, C.goldBright, 13, 'bold', 'center');
+  textAt('Contact TMS Solutions Group to activate your membership and begin capturing these savings.', W / 2, y + 44, C.lgray, 9, 'normal', 'center');
+  textAt('tmsolutionsgroup.com', W / 2, y + 60, C.goldBright, 10, 'bold', 'center');
+
+  // ================================================================
+  // DISCLAIMER PAGE
+  // ================================================================
+  doc.addPage();
+  fillRect(0, 0, W, H, C.warmBg);
+  fillRect(0, 0, W, 52, C.black);
+  textAt('DISCLOSURES & LEGAL NOTICE', ML, 34, C.goldBright, 10, 'bold');
+
+  y = 80;
+  textAt('Important Disclosures', ML, y, C.black, 12, 'bold'); y += 14;
+  hline(y, C.xgray); y += 14;
+
+  const disclaimerText = 'Savings estimates are based on information provided and represent potential ranges only. Actual savings will vary based on your specific business circumstances, current vendors, and implementation. These figures are for informational purposes only and do not constitute financial, legal, tax, or professional advice. TMS Solutions Group makes no guarantee of specific savings outcomes. Consult a qualified professional before making any financial decisions.';
+  font('normal', 9.5); sc(C.mgray);
+  const dLines = wrap(disclaimerText, CW);
+  doc.text(dLines, ML, y); y += dLines.length * 13 + 24;
+
+  hline(y, C.xgray); y += 18;
+  textAt('About TMS Solutions Group', ML, y, C.black, 11, 'bold'); y += 14;
+  const aboutLines = wrap('TMS Solutions Group is a business optimization membership organization that connects small and mid-sized businesses with vetted programs, preferred vendor pricing, and expert advisory services across health, financial, tax, telecom, insurance, and operational categories.', CW);
+  font('normal', 9.5); sc(C.mgray);
+  doc.text(aboutLines, ML, y); y += aboutLines.length * 13 + 24;
+
+  hline(y, C.xgray); y += 18;
+  textAt('Contact Information', ML, y, C.black, 11, 'bold'); y += 14;
+  ['TMS Solutions Group', 'Website: tmsolutionsgroup.com', 'Email: info@tmsolutionsgroup.com', 'Phone: (000) 000-0000'].forEach(line => {
+    font('normal', 9.5); sc(C.mgray);
+    doc.text(line, ML, y); y += 15;
+  });
+
+  // ================================================================
+  // FOOTER ON ALL PAGES (skip cover)
+  // ================================================================
+  const totalPages = doc.getNumberOfPages();
+  for (let p = 2; p <= totalPages; p++) {
+    doc.setPage(p);
+    hline(H - 28, C.xgray, 0.3);
+    font('normal', 7.5); sc(C.lgray);
+    doc.text('TMS Solutions Group  |  tmsolutionsgroup.com', ML, H - 16);
+    doc.text(`Page ${p} of ${totalPages}`, W - MR, H - 16, { align: 'right' });
+    sc(C.mgray);
+    doc.text(`\u00A9 ${new Date().getFullYear()} TMS Solutions Group. For informational purposes only.`, W / 2, H - 16, { align: 'center' });
+  }
+
+  // ================================================================
+  // SAVE
+  // ================================================================
+  const slug = bizName ? bizName.replace(/[^a-zA-Z0-9]+/g, '-').slice(0, 40) + '-' : '';
+  doc.save(`TMS-Report-${slug}${new Date().toISOString().slice(0, 10)}.pdf`);
+}
+</script>
+</body>
+</html>
